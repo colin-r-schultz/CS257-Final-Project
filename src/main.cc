@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main() {
-    Parser parser("../small_files/pigeon5.txt");
+    Parser parser("../small_files/zebra.txt");
     size_t num_vars = parser.get_num_vars();
     std::vector<clause> clauses = parser.get_clauses();
 
