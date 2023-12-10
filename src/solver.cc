@@ -12,9 +12,8 @@ enum LiteralState { TRUE, FALSE, UNASSIGNED };
 
 class Solver {
     public:
-        Solver(std::vector<clause> clauses, int num_vars) {
-            this->clauses = clauses;
-            for (const clause& c : clauses) {
+        Solver(std::vector<clause>&& clauses, int num_vars) : clauses(std::move(clauses)) {
+            for (const clause& c : this->clauses) {
                 if (c.size() == 1) {
                     addAssignment(c[0]);
                 }
@@ -139,7 +138,7 @@ class Solver {
             std::cout << std::endl;
         }
 
-    private:
+    protected:
         std::vector<literal> to_assign;
 
         std::vector<literal> assignments;

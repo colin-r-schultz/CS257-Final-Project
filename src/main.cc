@@ -3,11 +3,10 @@
 #include <iostream>
 
 int main() {
-    Parser parser("../small_files/pigeon5.txt");
-    size_t num_vars = parser.get_num_vars();
-    std::vector<clause> clauses = parser.get_clauses();
-
-    AdjListSolver solver(clauses, num_vars);
-    std::cout << solver.solve() << std::endl;
+    std::vector<clause> clauses;
+    int num_vars = parse("../small_files/pigeon5.txt", clauses);
+    print_clauses(clauses);
+    AdjListSolver solver(std::move(clauses), num_vars);
+    // std::cout << solver.solve() << std::endl;
     return 0;
 }
