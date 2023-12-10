@@ -1,6 +1,12 @@
-#include "adj_list_solver.cc"
+#include "watched_literals_solver.cc"
 #include "parse.cc"
 #include <iostream>
+
+#ifdef WATCHED_LITS
+    typedef WatchedLiteralsSolver SolverTy;
+#else
+    typedef Solver SolverTy;
+#endif
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -9,8 +15,7 @@ int main(int argc, char *argv[]) {
     }
     std::vector<clause> clauses;
     int num_vars = parse(argv[1], clauses);
-    print_clauses(clauses);
-    AdjListSolver solver(std::move(clauses), num_vars);
+    SolverTy solver(std::move(clauses), num_vars);
     std::cout << solver.solve() << std::endl;
     return 0;
 }
