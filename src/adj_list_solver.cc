@@ -3,9 +3,9 @@
 
 class AdjListSolver : public Solver {
    public:
-    AdjListSolver(std::vector<clause> clauses, int num_vars) : Solver(clauses, num_vars), positive_adjacency_lists(num_vars + 1), negative_adjacency_lists(num_vars + 1) {
-        for (clause_id i = 0; i < clauses.size(); i++) {
-            for (const literal lit : clauses[i]) {
+    AdjListSolver(std::vector<clause>&& clauses, int num_vars) : Solver(std::move(clauses), num_vars), positive_adjacency_lists(num_vars + 1), negative_adjacency_lists(num_vars + 1) {
+        for (clause_id i = 0; i < this->clauses.size(); i++) {
+            for (const literal lit : this->clauses[i]) {
                 if (lit < 0) {
                     positive_adjacency_lists[-lit].push_back(i);
                 } else {
