@@ -3,24 +3,25 @@
 #include "parse.cc"
 #include <iostream>
 
-#define HT_LIST
-
-#ifdef WATCHED_LITS
-    typedef WatchedLiteralsSolver SolverTy;
-#elifdef HT_LIST
-    typedef HTListSolver SolverTy;
-#else
-    typedef Solver SolverTy;
-#endif
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        std::cout << "Missing filename argument" << std::endl;
+    if (argc < 3) {
+        std::cout << "Missing filename argument or solver type argument" << std::endl;
         return 1;
     }
     std::vector<clause> clauses;
-    int num_vars = parse(argv[1], clauses);
-    SolverTy solver(std::move(clauses), num_vars);
-    std::cout << solver.solve() << std::endl;
+    int num_vars = parse(argv[2], clauses);
+
+    if (!strcmp(argv[1], "-h")) {
+        HTListSolver solver(std::move(clauses), num_vars);
+        std::cout << solver.solve() << std::endl;
+    } else if (!strcmp(argv[1], "-w")) {
+        WatchedLiteralsSolver solver(std::move(clauses), num_vars);
+        std::cout << solver.solve() << std::endl;
+    } else {
+        Solver solver(std::move(clauses), num_vars);
+        std::cout << solver.solve() << std::endl;
+    }
+
     return 0;
 }

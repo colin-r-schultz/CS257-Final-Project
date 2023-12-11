@@ -69,7 +69,7 @@ class HTListSolver : public AdjListSolver {
                 for (const literal lit : c) {
                     if (getAssignment(lit) == UNASSIGNED) {
                         decision_points.push_back(assignments.size());
-                        std::cout << "deciding " << lit << std::endl;
+                        // std::cout << "deciding " << lit << std::endl;
                         addAssignment(lit);
                         update_ht_decision_pt();
                         return false;
