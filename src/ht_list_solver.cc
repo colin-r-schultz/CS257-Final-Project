@@ -16,19 +16,28 @@ class HTListSolver : public AdjListSolver {
         }
 
         virtual literal getImpliedLiteral(clause_id i, literal assignment) {
-            HTPointers& top = ht_at_decision_pt[i].back();
-            if (top.decision_point < decision_points.size()) {
-                ht_at_decision_pt[i].push_back({decision_points.size(), top.head, top.tail});
-            }
-            HTPointers& ht = ht_at_decision_pt[i].back();
+            HTPointers ht = ht_at_decision_pt[i].back();
+            bool modified = false;
 
             if (clauses[i][ht.head] == -assignment) {
+                modified = true;
                 while ((getAssignment(clauses[i][ht.head]) == FALSE) && (ht.head != ht.tail)) {
                     ht.head += 1;
                 }  
             } else if (clauses[i][ht.tail] == -assignment) {
+                modified = true;
                 while ((getAssignment(clauses[i][ht.tail]) == FALSE) && (ht.head != ht.tail)) {
                     ht.tail -= 1;
+                }
+            }
+
+
+            if (modified) {
+                if (ht.decision_point < decision_points.size()) {
+                    ht.decision_point++;
+                    ht_at_decision_pt[i].push_back(ht);
+                } else {
+                    ht_at_decision_pt[i].back() = ht;
                 }
             }
 
