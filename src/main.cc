@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     }
     std::vector<clause> clauses;
     int num_vars = parse(argv[1], clauses);
-    HTListSolver solver(std::move(clauses), num_vars);
+    SolverTy solver(std::move(clauses), num_vars);
     std::cout << solver.solve() << std::endl;
     return 0;
 }
