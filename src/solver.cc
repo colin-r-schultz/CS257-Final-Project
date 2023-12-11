@@ -7,11 +7,15 @@ typedef int literal;
 typedef size_t clause_id;
 typedef std::vector<literal> clause;
 
-enum LiteralState { TRUE, FALSE, UNASSIGNED };
+enum LiteralState { 
+    TRUE = 1, 
+    FALSE = -1, 
+    UNASSIGNED = 0, 
+};
 
 class Solver {
    public:
-    Solver(std::vector<clause>&& clauses, int num_vars) : clauses(std::move(clauses)) {
+    Solver(std::vector<clause>&& clauses, int num_vars) : clauses(std::move(clauses)), variable_map(num_vars + 1, UNASSIGNED) {
         for (const clause& c : this->clauses) {
             if (c.size() == 1) {
                 addAssignment(c[0]);
@@ -50,6 +54,7 @@ class Solver {
 
     void setMapping(literal assignment) {
         assignments.push_back(assignment);
+        variable_map[std::abs(assignment)] = (assignment > 0 ? TRUE : FALSE);
     }
 
     virtual std::vector<clause_id> getRelevantClauses(literal assignment) {
@@ -94,15 +99,19 @@ class Solver {
     }
 
     LiteralState getAssignment(literal var) {
-        for (const literal assignment : assignments) {
-            if (assignment == var) {
-                return TRUE;
-            }
-            if (assignment == -var) {
-                return FALSE;
-            }
+        // for (const literal assignment : assignments) {
+        //     if (assignment == var) {
+        //         return TRUE;
+        //     }
+        //     if (assignment == -var) {
+        //         return FALSE;
+        //     }
+        // }
+        // return UNASSIGNED;
+        if (var < 0) {
+            return (LiteralState)-variable_map[-var];
         }
-        return UNASSIGNED;
+        return variable_map[var];
     }
 
     virtual bool decide() {
@@ -125,6 +134,9 @@ class Solver {
         }
         auto decision_point = assignments.begin() + decision_points.back();
         literal bad_decision = *decision_point;
+        for (auto it = decision_point; it != assignments.end(); it++) {
+            variable_map[std::abs(*it)] = UNASSIGNED;
+        }
         assignments.erase(decision_point, assignments.end());
         to_assign.clear();
         decision_points.pop_back();
@@ -145,4 +157,6 @@ class Solver {
     std::vector<literal> assignments;
     std::vector<size_t> decision_points;
     std::vector<clause> clauses;
+
+    std::vector<LiteralState> variable_map;
 };

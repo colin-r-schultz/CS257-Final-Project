@@ -65,30 +65,17 @@ class HTListSolver : public AdjListSolver {
         }
 
         virtual bool decide() {
-            for (const clause& c : clauses) {
-                for (const literal lit : c) {
-                    if (getAssignment(lit) == UNASSIGNED) {
-                        decision_points.push_back(assignments.size());
-                        // std::cout << "deciding " << lit << std::endl;
-                        addAssignment(lit);
-                        update_ht_decision_pt();
-                        return false;
-                    }
-                }
+            if (!this->Solver::decide()) {
+                update_ht_decision_pt();
+                return false;
             }
             return true;
         }
 
         virtual bool backtrack() {
-            if (decision_points.empty()) {
+            if (!this->Solver::backtrack()) {
                 return false;
             }
-            auto decision_point = assignments.begin() + decision_points.back();
-            literal bad_decision = *decision_point;
-            assignments.erase(decision_point, assignments.end());
-            to_assign.clear();
-            decision_points.pop_back();
-            addAssignment(-bad_decision);
 
             for (size_t i = 0; i < clauses.size(); i++) {
                 cur_ht_assignment[i] = ht_at_decision_pt[i].back();
