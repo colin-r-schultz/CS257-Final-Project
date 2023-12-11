@@ -99,25 +99,21 @@ class Solver {
     }
 
     LiteralState getAssignment(literal var) {
-        // for (const literal assignment : assignments) {
-        //     if (assignment == var) {
-        //         return TRUE;
-        //     }
-        //     if (assignment == -var) {
-        //         return FALSE;
-        //     }
-        // }
-        // return UNASSIGNED;
         if (var < 0) {
             return (LiteralState)-variable_map[-var];
         }
         return variable_map[var];
     }
 
-    virtual bool decide() {
+    bool decide() {
         for (const clause& c : clauses) {
             for (const literal lit : c) {
-                if (getAssignment(lit) == UNASSIGNED) {
+                auto assignment = getAssignment(lit);
+                if (assignment == TRUE) {
+                    // move to next clause
+                    break;
+                }
+                if (assignment == UNASSIGNED) {
                     decision_points.push_back(assignments.size());
                     // std::cout << "deciding " << lit << std::endl;
                     addAssignment(lit);

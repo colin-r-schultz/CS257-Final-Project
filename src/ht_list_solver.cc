@@ -8,33 +8,32 @@ class HTListSolver : public AdjListSolver {
         HTListSolver(std::vector<clause>&& clauses, int num_vars) : AdjListSolver(std::move(clauses), num_vars) {
             for (const clause& c : this->clauses) {
                 if (c.size() == 1) {
-                    cur_ht_assignment.push_back({0, 0});
-                    ht_at_decision_pt.push_back({{0, 0}});
+                    ht_at_decision_pt.push_back({{0, 0, 0}});
                 } else {
-                    cur_ht_assignment.push_back({0, c.size() - 1});
-                    ht_at_decision_pt.push_back({{0, c.size() - 1}});
+                    ht_at_decision_pt.push_back({{0, 0, c.size() - 1}});
                 }
             }
         }
 
         virtual literal getImpliedLiteral(clause_id i, literal assignment) {
-            lit_id head = cur_ht_assignment[i].first;
-            lit_id tail = cur_ht_assignment[i].second;
+            HTPointers& top = ht_at_decision_pt[i].back();
+            if (top.decision_point < decision_points.size()) {
+                ht_at_decision_pt[i].push_back({decision_points.size(), top.head, top.tail});
+            }
+            HTPointers& ht = ht_at_decision_pt[i].back();
 
-            if (clauses[i][head] == -assignment) {
-                while ((getAssignment(clauses[i][head]) == FALSE) && (head != tail)) {
-                    head += 1;
+            if (clauses[i][ht.head] == -assignment) {
+                while ((getAssignment(clauses[i][ht.head]) == FALSE) && (ht.head != ht.tail)) {
+                    ht.head += 1;
                 }  
-            } else if (clauses[i][tail] == -assignment) {
-                while ((getAssignment(clauses[i][tail]) == FALSE) && (head != tail)) {
-                    tail -= 1;
+            } else if (clauses[i][ht.tail] == -assignment) {
+                while ((getAssignment(clauses[i][ht.tail]) == FALSE) && (ht.head != ht.tail)) {
+                    ht.tail -= 1;
                 }
             }
 
-            cur_ht_assignment[i] = {head, tail};
-
-            if (head == tail) {
-                return clauses[i][head];
+            if (ht.head == ht.tail) {
+                return clauses[i][ht.head];
             } else {
                 return 0;
             }
@@ -58,34 +57,26 @@ class HTListSolver : public AdjListSolver {
             std::cout << std::endl;
         }
 
-        void update_ht_decision_pt() {
-            for (size_t i = 0; i < clauses.size(); i++) {
-                ht_at_decision_pt[i].push_back(cur_ht_assignment[i]);
-            }
-        }
-
-        virtual bool decide() {
-            if (!this->Solver::decide()) {
-                update_ht_decision_pt();
-                return false;
-            }
-            return true;
-        }
-
         virtual bool backtrack() {
             if (!this->Solver::backtrack()) {
                 return false;
             }
 
             for (size_t i = 0; i < clauses.size(); i++) {
-                cur_ht_assignment[i] = ht_at_decision_pt[i].back();
-                ht_at_decision_pt[i].pop_back();
+                while (ht_at_decision_pt[i].back().decision_point > decision_points.size()) {
+                    ht_at_decision_pt[i].pop_back();
+                }
             }
 
             return true;
         }
 
     private:
-        std::vector<std::pair<lit_id, lit_id>> cur_ht_assignment;
-        std::vector<std::vector<std::pair<lit_id, lit_id>>> ht_at_decision_pt;
+        struct HTPointers {
+            size_t decision_point;
+            lit_id head;
+            lit_id tail;
+        };
+
+        std::vector<std::vector<HTPointers>> ht_at_decision_pt;
 };
