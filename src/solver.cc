@@ -105,7 +105,7 @@ class Solver {
         return variable_map[var];
     }
 
-    virtual bool decide() {
+    bool decide() {
         for (const clause& c : clauses) {
             for (const literal lit : c) {
                 auto assignment = getAssignment(lit);

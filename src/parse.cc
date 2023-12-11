@@ -46,7 +46,7 @@ int parse(const std::string& file_name, std::vector<clause>& clauses) {
 }
 
 void print_clauses(const std::vector<clause>& clauses) {
-    for (const clause c : clauses) {
+    for (const clause& c : clauses) {
         std::cout << "clause ";
         for (const literal lit : c) {
             std::cout << lit << " ";
