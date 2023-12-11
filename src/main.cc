@@ -12,7 +12,10 @@ int main(int argc, char *argv[]) {
     std::vector<clause> clauses;
     int num_vars = parse(argv[2], clauses);
 
-    if (!strcmp(argv[1], "-h")) {
+    if (!strcmp(argv[1], "-a")) {
+        AdjListSolver solver(std::move(clauses), num_vars);
+        std::cout << solver.solve() << std::endl;
+    } else if (!strcmp(argv[1], "-h")) {
         HTListSolver solver(std::move(clauses), num_vars);
         std::cout << solver.solve() << std::endl;
     } else if (!strcmp(argv[1], "-w")) {
