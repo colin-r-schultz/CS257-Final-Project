@@ -106,7 +106,7 @@ class Solver {
         return UNASSIGNED;
     }
 
-    bool decide() {
+    virtual bool decide() {
         for (const clause& c : clauses) {
             for (const literal lit : c) {
                 if (getAssignment(lit) == UNASSIGNED) {
