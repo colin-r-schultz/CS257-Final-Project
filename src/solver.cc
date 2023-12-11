@@ -65,10 +65,11 @@ class Solver {
     }
 
     void propagate(literal assignment) {
+        // printModel();
         for (const clause_id i : getRelevantClauses(assignment)) {
             literal implied = getImpliedLiteral(i, assignment);
             if (implied != 0) {
-                std::cout << "clause " << i << " implied " << implied << std::endl;
+                // std::cout << "clause " << i << " implied " << implied << std::endl;
                 addAssignment(implied);
             }
         }
@@ -79,15 +80,13 @@ class Solver {
         for (const literal lit : clauses[i]) {
             LiteralState state = getAssignment(lit);
             if (state == TRUE) {
-                implied = 0;
-                break;
+                return 0;
             }
             if (state == UNASSIGNED) {
                 if (implied == 0) {
                     implied = lit;
                 } else {
-                    implied = 0;
-                    break;
+                    return 0;
                 }
             }
         }
@@ -111,7 +110,7 @@ class Solver {
             for (const literal lit : c) {
                 if (getAssignment(lit) == UNASSIGNED) {
                     decision_points.push_back(assignments.size());
-                    std::cout << "deciding " << lit << std::endl;
+                    // std::cout << "deciding " << lit << std::endl;
                     addAssignment(lit);
                     return false;
                 }

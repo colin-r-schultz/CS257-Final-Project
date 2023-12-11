@@ -24,7 +24,11 @@ class WatchedLiteralsSolver : public AdjListSolver {
 
     bool reassignWatchedLiteral(const clause& c, lit_id& current_watched, lit_id other_watched) {
         for (lit_id i = 0; i < c.size(); i++) {
-            if (getAssignment(c[i]) == UNASSIGNED && i != other_watched) {
+            const auto assignment = getAssignment(c[i]);
+            if (assignment == TRUE) {
+                return true;
+            }
+            if (i != other_watched && assignment == UNASSIGNED) {
                 current_watched = i;
                 return true;
             }
