@@ -40,14 +40,14 @@ class HTListSolver : public AdjListSolver {
             }
         }
 
-        void printvec(std::vector<std::pair<lit_id, lit_id>> vec) {
+        void print_vec(std::vector<std::pair<lit_id, lit_id>> vec) {
             for (std::pair<lit_id, lit_id> p : vec) {
                 std::cout << "{" << p.first << ", " << p.second << "} ";
             }
             std::cout << std::endl;
         }
 
-        void printnestedvec(std::vector<std::vector<std::pair<lit_id, lit_id>>> vec) {
+        void print_nested_vec(std::vector<std::vector<std::pair<lit_id, lit_id>>> vec) {
             for (std::vector<std::pair<lit_id, lit_id>> v : vec) {
                 std::cout << "{";
                 for (std::pair<lit_id, lit_id> p : v) {
@@ -65,13 +65,13 @@ class HTListSolver : public AdjListSolver {
         }
 
         virtual bool decide() {
-            update_ht_decision_pt();
             for (const clause& c : clauses) {
                 for (const literal lit : c) {
                     if (getAssignment(lit) == UNASSIGNED) {
                         decision_points.push_back(assignments.size());
                         std::cout << "deciding " << lit << std::endl;
                         addAssignment(lit);
+                        update_ht_decision_pt();
                         return false;
                     }
                 }
