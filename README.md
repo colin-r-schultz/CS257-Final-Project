@@ -1,10 +1,29 @@
-CS257
+# CS257 Final Project
+This repository contains the code for a SAT solver created for our final project for CS257.
 
-Build the project:
+### Building
+To build the project, just compile `src/main.cc` with any C++ compiler.
 
-`cd src`
-`g++ -std=c++17 main.cc -o build/solver`
+For example:
+```
+g++ -std=c++17 -O3 src/main.cc -o solver
+```
 
-Run different versions of the solver, for example `./build/solver -w ../benchmarks/benchmark1.cnf` runs the watched literal solver on the first benchmark. 
+### Running
+Run the solver by selecting an optimization and CNF file.
 
-Use `-h`, `-a`, or `-b` to run the H/T list, adjacency list, or baseline implementations respectively. 
+For example:
+```
+./solver -w benchmarks/benchmark1.cnf
+```
+The program will first print the model it finds as a list of literals. Then it will print 0 if the problem is unsatisfiable or 1 if the program is satisfiable.
+
+Solver options:
+* `-b` - run the baseline solver
+* `-a` - run the solver with adjancency lists
+* `-h` - run the solver with adjancency lists and H/T lists
+* `-w` - run the solver with adjancency lists and watched literals
+
+The benchmarks used in the writeup are available in the `benchmarks/` directory.
+
+The `small_files/` directory contains small cnf filed for testing purposes.
