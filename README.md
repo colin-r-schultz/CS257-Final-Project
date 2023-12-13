@@ -25,5 +25,3 @@ Solver options:
 * `-w` - run the solver with adjancency lists and watched literals
 
 The benchmarks used in the writeup are available in the `benchmarks/` directory.
-
-The `small_files/` directory contains small cnf filed for testing purposes.
